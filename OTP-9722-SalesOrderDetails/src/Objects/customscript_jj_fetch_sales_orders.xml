@@ -1,0 +1,22 @@
+<restlet scriptid="customscript_jj_fetch_sales_orders">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>JJ RE Fetch Sales Orders</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteScripts/JobinAndJismi/OTP-9723-FetchOrder/jj_rl_fetchsalesorder.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_jj_fetch_sales_orders">
+      <allemployees>F</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <isdeployed>T</isdeployed>
+      <loglevel>DEBUG</loglevel>
+      <status>RELEASED</status>
+      <title>JJ Fetch Sales Orders</title>
+    </scriptdeployment>
+  </scriptdeployments>
+</restlet>

@@ -1,0 +1,22 @@
+<restlet scriptid="customscript_jj_rl_create_item_fulfill">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>JJ Create Item Fulfillment</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteScripts/JobinAndJismi/OTP-9724-CreateItemFulfillment/jj_rl_createitemfulfillment.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_jj_rl_create_item_fulfill">
+      <allemployees>T</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <isdeployed>T</isdeployed>
+      <loglevel>DEBUG</loglevel>
+      <status>RELEASED</status>
+      <title>JJ Create Item Fulfillment</title>
+    </scriptdeployment>
+  </scriptdeployments>
+</restlet>

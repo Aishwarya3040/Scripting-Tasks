@@ -1,0 +1,25 @@
+<suitelet scriptid="customscript_jj_donor_search">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>JJ DONOR SEARCH</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteScripts/JobinAndJismi/OTP-9660-DonorSearch/jj_sl_donorsearch.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_jj_donor_search">
+      <allemployees>T</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole>ONLINE_FORM_USER</audslctrole>
+      <eventtype></eventtype>
+      <isdeployed>T</isdeployed>
+      <isonline>F</isonline>
+      <loglevel>ERROR</loglevel>
+      <runasrole></runasrole>
+      <status>RELEASED</status>
+      <title>JJ DONOR SEARCH</title>
+    </scriptdeployment>
+  </scriptdeployments>
+</suitelet>

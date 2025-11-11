@@ -11,7 +11,7 @@
  *
  * Author: Jobin and Jismi IT Services
  *
- * Date Created : 29-October-2025
+ * Date Created : 28-October-2025
  *
  * Description : Suitelet and UserEvent scripts enable external users to submit customer queries directly into NetSuite without login access.
  *

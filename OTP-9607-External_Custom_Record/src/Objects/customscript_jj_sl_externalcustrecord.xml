@@ -1,0 +1,25 @@
+<suitelet scriptid="customscript_jj_sl_externalcustrecord">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>JJ SL ExternalCustRecord</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteScripts/JobinAndJismi/OTP-9607-External_Custom_Record/jj_sl_external_custom_record.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_jj_sl_externalcustomrecord">
+      <allemployees>T</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole>ONLINE_FORM_USER</audslctrole>
+      <eventtype></eventtype>
+      <isdeployed>T</isdeployed>
+      <isonline>T</isonline>
+      <loglevel>ERROR</loglevel>
+      <runasrole></runasrole>
+      <status>RELEASED</status>
+      <title>JJ SL ExternalCustRecord</title>
+    </scriptdeployment>
+  </scriptdeployments>
+</suitelet>

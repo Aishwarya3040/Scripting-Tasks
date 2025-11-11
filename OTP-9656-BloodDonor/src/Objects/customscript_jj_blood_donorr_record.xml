@@ -1,0 +1,25 @@
+<suitelet scriptid="customscript_jj_blood_donorr_record">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>JJ BLOOD DONORR RECORD</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteScripts/JobinAndJismi/OTP-9656-BloodDonor/jj_sl_blooddonorr.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_jj_blood_donorr_record">
+      <allemployees>T</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole>ONLINE_FORM_USER</audslctrole>
+      <eventtype></eventtype>
+      <isdeployed>T</isdeployed>
+      <isonline>T</isonline>
+      <loglevel>DEBUG</loglevel>
+      <runasrole></runasrole>
+      <status>RELEASED</status>
+      <title>JJ BLOOD DONORR RECORD</title>
+    </scriptdeployment>
+  </scriptdeployments>
+</suitelet>

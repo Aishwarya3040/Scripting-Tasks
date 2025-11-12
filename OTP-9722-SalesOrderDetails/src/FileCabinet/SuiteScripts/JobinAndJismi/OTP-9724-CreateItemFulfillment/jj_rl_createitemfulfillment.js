@@ -17,11 +17,11 @@
  *
  * REVISION HISTORY
  *
- * @version 1.0 : 11-November-2025 : Initial build created by JJ0416
+ * @version 1.3 : 12-November-2025 : Added line-based matching and validation for missing items by JJ0416
  *
 *************************************************************************************************/
 
-define(['N/log', 'N/record'], function(log, record) {
+define(['N/log', 'N/record'], (log, record) => {
 
   /**
    * Creates an Item Fulfillment record from a Sales Order.
@@ -32,19 +32,13 @@ define(['N/log', 'N/record'], function(log, record) {
     try {
       if (!requestBody || !requestBody.salesOrderId) {
         return {
-          RESULT: "FAILED",
-          error: "Missing salesOrderId in request body"
+          RESULT: 'FAILED',
+          error: 'Missing salesOrderId in request body'
         };
       }
 
       const salesOrderId = requestBody.salesOrderId;
-      const requestedItems = requestBody.items || [];
-
-      const salesOrderRecord = record.load({
-        type: record.Type.SALES_ORDER,
-        id: salesOrderId,
-        isDynamic: true
-      });
+      const requestedItems = Array.isArray(requestBody.items) ? requestBody.items : [];
 
       const itemFulfillmentRecord = record.transform({
         fromType: record.Type.SALES_ORDER,
@@ -54,34 +48,44 @@ define(['N/log', 'N/record'], function(log, record) {
       });
 
       const fulfillmentLineCount = itemFulfillmentRecord.getLineCount({ sublistId: 'item' });
+      let hasValidLine = false;
 
-      for (let i = 0; i < fulfillmentLineCount; i++) {
-        itemFulfillmentRecord.selectLine({ sublistId: 'item', line: i });
+      for (let lineIndex = 0; lineIndex < fulfillmentLineCount; lineIndex++) {
+        itemFulfillmentRecord.selectLine({ sublistId: 'item', line: lineIndex });
 
-        const currentItemId = itemFulfillmentRecord.getCurrentSublistValue({
-          sublistId: 'item',
-          fieldId: 'item'
-        });
+        const matchedItem = requestedItems.find(item => item?.line === lineIndex);
 
-        const matchedItem = requestedItems.find(item => item.itemId == currentItemId);
-
-        if (matchedItem && matchedItem.quantity) {
+        if (matchedItem) {
           itemFulfillmentRecord.setCurrentSublistValue({
             sublistId: 'item',
-            fieldId: 'quantity',
-            value: matchedItem.quantity
+            fieldId: 'itemreceive',
+            value: true
           });
-        }
 
-        if (matchedItem && matchedItem.location) {
-          itemFulfillmentRecord.setCurrentSublistValue({
-            sublistId: 'item',
-            fieldId: 'location',
-            value: matchedItem.location
-          });
+          if (matchedItem.quantity) {
+            itemFulfillmentRecord.setCurrentSublistValue({
+              sublistId: 'item',
+              fieldId: 'quantity',
+              value: matchedItem.quantity
+            });
+          }
+
+          if (matchedItem.location) {
+            itemFulfillmentRecord.setCurrentSublistValue({
+              sublistId: 'item',
+              fieldId: 'location',
+              value: matchedItem.location
+            });
+          }
+
+          hasValidLine = true;
         }
 
         itemFulfillmentRecord.commitLine({ sublistId: 'item' });
+      }
+
+      if (!hasValidLine) {
+        throw new Error('No matching line items found on the Sales Order. Please verify item references.');
       }
 
       const savedFulfillmentId = itemFulfillmentRecord.save();
@@ -92,19 +96,19 @@ define(['N/log', 'N/record'], function(log, record) {
       });
 
       return {
-        RESULT: "Item Fulfillment Created",
+        RESULT: 'Item Fulfillment Created',
         fulfillmentId: savedFulfillmentId
       };
 
-    } catch (error) {
+    } catch (fulfillmentError) {
       log.error({
         title: 'Failed to create Item Fulfillment',
-        details: error
+        details: fulfillmentError
       });
 
       return {
-        RESULT: "FAILED",
-        error: error.message
+        RESULT: 'FAILED',
+        error: fulfillmentError.message
       };
     }
   }
@@ -114,18 +118,18 @@ define(['N/log', 'N/record'], function(log, record) {
    * @param {Object|string} requestBody - The request body containing fulfillment data.
    * @returns {Object} Response object with result or error.
    */
-  const handlePostRequest = (requestBody) => {
+  const handlePostRequest = requestBody => {
     try {
       return createItemFulfillmentFromSalesOrder(requestBody);
-    } catch (error) {
+    } catch (postError) {
       log.error({
         title: 'Failed to process POST request',
-        details: error
+        details: postError
       });
 
       return {
-        RESULT: "FAILED",
-        error: error.message
+        RESULT: 'FAILED',
+        error: postError.message
       };
     }
   };

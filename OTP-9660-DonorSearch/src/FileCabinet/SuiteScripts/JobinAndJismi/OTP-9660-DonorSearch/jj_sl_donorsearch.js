@@ -17,14 +17,14 @@
  *
  * REVISION HISTORY
  *
- * @version 1.0 : 11-November-2025 : Initial build created by JJ0416
+ * @version 1.1 : 12-November-2025 : Variable naming updated to camelCase by JJ0416
  *
 *************************************************************************************************/
 
 define(['N/ui/serverWidget', 'N/search', 'N/log'], function(serverWidget, search, log) {
 
-  const CUSTOM_RECORD_TYPE = 'customrecord_jj_blood_donor_record';
-  const CLIENT_SCRIPT_PATH = './jj_cs_donorsearch.js';
+  const customRecordType = 'customrecord_jj_blood_donor_record';
+  const clientScriptPath = './jj_cs_donorsearch.js';
 
   /**
    * Entry point for the Suitelet request.
@@ -33,9 +33,9 @@ define(['N/ui/serverWidget', 'N/search', 'N/log'], function(serverWidget, search
   function onRequest(context) {
     try {
       log.debug({ title: 'Suitelet Triggered', details: 'Request method: ' + context.request.method });
-      displayDonorSearchForm(context);
+      renderDonorSearchForm(context);
     } catch (error) {
-      log.error({ title: 'Error in onRequest', details: error.message || error.toString() });
+        log.error({ title: 'Error in onRequest', details: error.message || error.toString() });
     }
   }
 
@@ -43,46 +43,46 @@ define(['N/ui/serverWidget', 'N/search', 'N/log'], function(serverWidget, search
    * Displays the blood donor search form and results if criteria are provided.
    * @param {SuiteletContext} context - The Suitelet context object.
    */
-  function displayDonorSearchForm(context) {
+  function renderDonorSearchForm(context) {
     try {
-      log.debug({ title: 'Display Form', details: 'Initializing form' });
+      log.debug({ title: 'Render Form', details: 'Initializing form' });
 
-      const form = serverWidget.createForm({ title: 'Blood Donor Search' });
-      form.clientScriptModulePath = CLIENT_SCRIPT_PATH;
+      const donorSearchForm = serverWidget.createForm({ title: 'Blood Donor Search' });
+      donorSearchForm.clientScriptModulePath = clientScriptPath;
 
-      const bloodGroupField = form.addField({
+      const bloodGroupField = donorSearchForm.addField({
         id: 'custpage_blood_group',
         type: serverWidget.FieldType.TEXT,
         label: 'Blood Group'
       });
       bloodGroupField.isMandatory = true;
 
-      const lastDonationDateField = form.addField({
+      const donationDateField = donorSearchForm.addField({
         id: 'custpage_last_donation_date',
         type: serverWidget.FieldType.DATE,
         label: 'Last Donation Date (Before)'
       });
-      lastDonationDateField.isMandatory = true;
+      donationDateField.isMandatory = true;
 
-      const params = context.request.parameters;
-      const selectedBloodGroup = params.custpage_blood_group;
-      const selectedDate = params.custpage_last_donation_date;
+      const requestParams = context.request.parameters;
+      const selectedBloodGroup = requestParams.custpage_blood_group;
+      const selectedDonationDate = requestParams.custpage_last_donation_date;
 
-      log.debug({ title: 'Received Parameters', details: `Blood Group: ${selectedBloodGroup}, Date: ${selectedDate}` });
+      log.debug({ title: 'Received Parameters', details: `Blood Group: ${selectedBloodGroup}, Date: ${selectedDonationDate}` });
 
-      if (selectedBloodGroup && selectedDate) {
+      if (selectedBloodGroup && selectedDonationDate) {
         bloodGroupField.defaultValue = selectedBloodGroup;
-        lastDonationDateField.defaultValue = selectedDate;
+        donationDateField.defaultValue = selectedDonationDate;
 
         try {
           log.debug({ title: 'Search Start', details: 'Creating donor search' });
 
           const donorSearch = search.create({
-            type: CUSTOM_RECORD_TYPE,
+            type: customRecordType,
             filters: [
               ['custrecord_jj_blood_group', 'is', selectedBloodGroup],
               'AND',
-              ['custrecord_jj_last_donation_date', 'onorbefore', selectedDate]
+              ['custrecord_jj_last_donation_date', 'onorbefore', selectedDonationDate]
             ],
             columns: [
               'custrecord_jj_first_name',
@@ -97,17 +97,17 @@ define(['N/ui/serverWidget', 'N/search', 'N/log'], function(serverWidget, search
           const donorResults = [];
           donorSearch.run().each(function(result) {
             donorResults.push({
-              name: result.getValue('custrecord_jj_first_name') + ' ' + result.getValue('custrecord_jj_last_name'),
-              phone: result.getValue('custrecord_jj_phone_number'),
+              fullName: result.getValue('custrecord_jj_first_name') + ' ' + result.getValue('custrecord_jj_last_name'),
+              phoneNumber: result.getValue('custrecord_jj_phone_number'),
               bloodGroup: result.getValue('custrecord_jj_blood_group'),
-              lastDonation: result.getValue('custrecord_jj_last_donation_date')
+              lastDonationDate: result.getValue('custrecord_jj_last_donation_date')
             });
             return true;
           });
 
           log.audit({ title: 'Search Results', details: `Found ${donorResults.length} donor(s)` });
 
-          const resultMessageField = form.addField({
+          const resultMessageField = donorSearchForm.addField({
             id: 'custpage_result_msg',
             type: serverWidget.FieldType.INLINEHTML,
             label: ' '
@@ -115,7 +115,7 @@ define(['N/ui/serverWidget', 'N/search', 'N/log'], function(serverWidget, search
           resultMessageField.defaultValue = `<b>Found ${donorResults.length} eligible donor(s)</b>`;
 
           if (donorResults.length > 0) {
-            const donorSublist = form.addSublist({
+            const donorSublist = donorSearchForm.addSublist({
               id: 'custpage_donors',
               type: serverWidget.SublistType.LIST,
               label: 'Eligible Donors'
@@ -127,15 +127,15 @@ define(['N/ui/serverWidget', 'N/search', 'N/log'], function(serverWidget, search
             donorSublist.addField({ id: 'custpage_lastdonation', type: serverWidget.FieldType.DATE, label: 'Last Donation Date' });
 
             for (let i = 0; i < donorResults.length; i++) {
-              donorSublist.setSublistValue({ id: 'custpage_name', line: i, value: donorResults[i].name });
-              donorSublist.setSublistValue({ id: 'custpage_phone', line: i, value: donorResults[i].phone });
+              donorSublist.setSublistValue({ id: 'custpage_name', line: i, value: donorResults[i].fullName });
+              donorSublist.setSublistValue({ id: 'custpage_phone', line: i, value: donorResults[i].phoneNumber });
               donorSublist.setSublistValue({ id: 'custpage_bloodgroup', line: i, value: donorResults[i].bloodGroup });
-              donorSublist.setSublistValue({ id: 'custpage_lastdonation', line: i, value: donorResults[i].lastDonation });
+              donorSublist.setSublistValue({ id: 'custpage_lastdonation', line: i, value: donorResults[i].lastDonationDate });
             }
           } else {
-            log.debug({ title: 'Search Result', details: 'No donors found' });
+              log.debug({ title: 'Search Result', details: 'No donors found' });
 
-            const noResultField = form.addField({
+            const noResultField = donorSearchForm.addField({
               id: 'custpage_no_result',
               type: serverWidget.FieldType.INLINEHTML,
               label: ' '
@@ -144,19 +144,19 @@ define(['N/ui/serverWidget', 'N/search', 'N/log'], function(serverWidget, search
           }
 
         } catch (searchError) {
-          log.error({ title: 'Search Error', details: searchError.message || searchError.toString() });
+            log.error({ title: 'Search Error', details: searchError.message || searchError.toString() });
         }
       } else {
-        log.debug({ title: 'Form Load', details: 'No parameters provided yet' });
+          log.debug({ title: 'Form Load', details: 'No parameters provided yet' });
       }
 
-      form.addSubmitButton({ label: 'Search' });
+      donorSearchForm.addSubmitButton({ label: 'Search' });
 
       log.debug({ title: 'Form Ready', details: 'Writing form to response' });
-      context.response.writePage(form);
+      context.response.writePage(donorSearchForm);
 
     } catch (formError) {
-      log.error({ title: 'Error in displayDonorSearchForm', details: formError.message || formError.toString() });
+        log.error({ title: 'Error in renderDonorSearchForm', details: formError.message || formError.toString() });
     }
   }
 

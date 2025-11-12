@@ -17,7 +17,7 @@
  *
  * REVISION HISTORY
  *
- * @version 1.0 : 11-November-2025 : Initial build created by JJ0416
+ * @version 1.1 : 12-November-2025 : Variable naming updated to camelCase by JJ0416
  *
 *************************************************************************************************/
 
@@ -27,44 +27,44 @@ define(['N/ui/dialog'], function(dialog) {
    * Executes when the page is initialized.
    * @param {PageInitContext} context - The page initialization context.
    */
-  function pageInit(context) {
+  function onPageInit(context) {
     try {
       console.log('Client Script Loaded');
-    } catch (error) {
-      console.error('Error in pageInit', error.message || error.toString());
+    } catch (initError) {
+        console.error('Error in onPageInit', initError.message || initError.toString());
     }
   }
 
   /**
    * Validates the last donation date.
    * Ensures the date is not in the future and is at least 90 days ago.
-   * @param {string} donationDate - The date string to validate.
+   * @param {string} donationDateString - The date string to validate.
    * @returns {{valid: boolean, message?: string}} Validation result.
    */
-  function validateDate(donationDate) {
+  function validateDonationDate(donationDateString) {
     try {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
 
-      const selectedDate = new Date(donationDate);
-      selectedDate.setHours(0, 0, 0, 0);
+      const donationDate = new Date(donationDateString);
+      donationDate.setHours(0, 0, 0, 0);
 
-      if (selectedDate > today) {
+      if (donationDate > todayDate) {
         return { valid: false, message: 'Date cannot be in the future.' };
       }
 
-      const diffDays = Math.floor((today - selectedDate) / (1000 * 60 * 60 * 24));
+      const daysDifference = Math.floor((todayDate - donationDate) / (1000 * 60 * 60 * 24));
 
-      if (diffDays < 90) {
+      if (daysDifference < 90) {
         return {
           valid: false,
-          message: 'Date must be at least 90 days ago.\nDays entered: ' + diffDays + ' days'
+          message: 'Date must be at least 90 days ago.\nDays entered: ' + daysDifference + ' days'
         };
       }
 
       return { valid: true };
-    } catch (error) {
-      console.error('Error in validateDate', error.message || error.toString());
+    } catch (validationError) {
+        console.error('Error in validateDonationDate', validationError.message || validationError.toString());
       return { valid: false, message: 'Date validation failed due to an error.' };
     }
   }
@@ -74,51 +74,51 @@ define(['N/ui/dialog'], function(dialog) {
    * @param {SaveRecordContext} context - The save record context.
    * @returns {boolean} True if valid, false otherwise.
    */
-  function saveRecord(context) {
+  function onSaveRecord(context) {
     try {
-      const currentRecord = context.currentRecord;
+      const donorRecord = context.currentRecord;
 
-      const bloodGroup = currentRecord.getValue({ fieldId: 'custpage_blood_group' });
-      const lastDonationDate = currentRecord.getValue({ fieldId: 'custpage_last_donation_date' });
+      const bloodGroupValue = donorRecord.getValue({ fieldId: 'custpage_blood_group' });
+      const donationDateValue = donorRecord.getValue({ fieldId: 'custpage_last_donation_date' });
 
-      console.log('saveRecord triggered');
-      console.log('Blood Group:', bloodGroup);
-      console.log('Last Donation Date:', lastDonationDate);
+      console.log('onSaveRecord triggered');
+      console.log('Blood Group:', bloodGroupValue);
+      console.log('Last Donation Date:', donationDateValue);
 
-      const missingFields = [];
+      const missingFieldLabels = [];
 
-      if (!bloodGroup) {
-        missingFields.push('Blood Group');
+      if (!bloodGroupValue) {
+        missingFieldLabels.push('Blood Group');
       }
 
-      if (!lastDonationDate) {
-        missingFields.push('Last Donation Date');
+      if (!donationDateValue) {
+        missingFieldLabels.push('Last Donation Date');
       }
 
-      if (missingFields.length > 0) {
+      if (missingFieldLabels.length > 0) {
         dialog.alert({
           title: 'Missing Information',
-          message: 'Please enter: ' + missingFields.join(' and ')
+          message: 'Please enter: ' + missingFieldLabels.join(' and ')
         });
         return false;
       }
 
-      const validationResult = validateDate(lastDonationDate);
-      if (!validationResult.valid) {
-        dialog.alert({ title: 'Validation Error', message: validationResult.message });
+      const dateValidationResult = validateDonationDate(donationDateValue);
+      if (!dateValidationResult.valid) {
+        dialog.alert({ title: 'Validation Error', message: dateValidationResult.message });
         return false;
       }
 
       return true;
 
-    } catch (error) {
-      console.error('Error in saveRecord', error.message || error.toString());
+    } catch (saveError) {
+        console.error('Error in onSaveRecord', saveError.message || saveError.toString());
       return false;
     }
   }
 
   return {
-    pageInit: pageInit,
-    saveRecord: saveRecord
+    pageInit: onPageInit,
+    saveRecord: onSaveRecord
   };
 });

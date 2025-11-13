@@ -1,0 +1,47 @@
+/**
+ * @NApiVersion 2.1
+ * @NScriptType ClientScript
+ * @NModuleScope Public
+ */
+
+/************************************************************************************************
+ *  
+ * Script Name  : OTP-9415 : Purchase Orders - Client Script
+ *
+ ************************************************************************************************
+ *
+ * Description  : Refreshes Suitelet dynamically when "Created By" filter changes.
+ *
+ ************************************************************************************************/
+
+define(['N/url', 'N/currentRecord', 'N/log'], function(url, currentRecord, log) {
+
+  const scriptId = 'customscript_jj_sl_purchase_orders'; // ✅ Replace with your Suitelet script ID
+  const deploymentId = 'customdeploy_jj_sl_purchase_orders'; // ✅ Replace with your deployment ID
+
+  function fieldChanged(context) {
+    try {
+      if (context.fieldId === 'custpage_employee') {
+        const record = currentRecord.get();
+        const employeeId = record.getValue({ fieldId: 'custpage_employee' });
+
+        const params = {};
+        if (employeeId) {
+          params.custpage_employee = employeeId;
+        }
+
+        const resolvedUrl = url.resolveScript({
+          scriptId: scriptId,
+          deploymentId: deploymentId,
+          params: params
+        });
+
+        window.location.href = resolvedUrl;
+      }
+    } catch (error) {
+      log.error({ title: 'fieldChanged Error', details: error });
+    }
+  }
+
+  return { fieldChanged: fieldChanged };
+});

@@ -39,8 +39,8 @@ define(['N/record', 'N/search', 'N/email', 'N/runtime', 'N/log'], function(recor
       const searchResult = customerSearch.run().getRange({ start: 0, end: 1 });
       return searchResult.length > 0 ? searchResult[0] : null;
     } catch (error) {
-      log.error({ title: 'Error in findCustomerByEmail', details: error });
-      return null;
+        log.error({ title: 'Error in findCustomerByEmail', details: error });
+        return null;
     }
   }
  
@@ -69,7 +69,7 @@ define(['N/record', 'N/search', 'N/email', 'N/runtime', 'N/log'], function(recor
         details: 'Customer ID ' + matchedCustomerId + ' linked to Inquiry ID ' + inquiryId
       });
     } catch (error) {
-      log.error({ title: 'Error in linkCustomerToInquiry', details: error });
+        log.error({ title: 'Error in linkCustomerToInquiry', details: error });
     }
   }
  
@@ -99,7 +99,7 @@ define(['N/record', 'N/search', 'N/email', 'N/runtime', 'N/log'], function(recor
         details: 'Inquiry from ' + customerName + ' (' + customerEmail + ') was emailed to Admin with subject: ' + inquirySubject
       });
     } catch (error) {
-      log.error({ title: 'Error in notifyAdmin', details: error });
+        log.error({ title: 'Error in notifyAdmin', details: error });
     }
   }
  
@@ -128,7 +128,7 @@ define(['N/record', 'N/search', 'N/email', 'N/runtime', 'N/log'], function(recor
         details: 'Inquiry from ' + customerName + ' (' + customerEmail + ') was emailed to Sales Rep ID: ' + assignedSalesRepId
       });
     } catch (error) {
-      log.error({ title: 'Error in notifySalesRep', details: error });
+        log.error({ title: 'Error in notifySalesRep', details: error });
     }
   }
  
@@ -169,28 +169,28 @@ define(['N/record', 'N/search', 'N/email', 'N/runtime', 'N/log'], function(recor
             if (assignedSalesRepId) {
               notifySalesRep(assignedSalesRepId, customerName, customerEmail, inquirySubject, inquiryMessage);
             } else {
-              log.debug({
-                title: 'No Sales Rep Assigned',
-                details: 'Customer ID ' + matchedCustomerId + ' has no Sales Rep.'
+                log.debug({
+                  title: 'No Sales Rep Assigned',
+                  details: 'Customer ID ' + matchedCustomerId + ' has no Sales Rep.'
               });
             }
           } else {
-            log.debug({
-              title: 'Customer Not Found',
-              details: 'No matching customer found for email: ' + customerEmail
+              log.debug({
+                title: 'Customer Not Found',
+                details: 'No matching customer found for email: ' + customerEmail
             });
           }
         } else {
-          log.debug({
-            title: 'Customer Already Linked',
-            details: 'Inquiry already linked to Customer ID: ' + existingCustomerRef
+            log.debug({
+              title: 'Customer Already Linked',
+              details: 'Inquiry already linked to Customer ID: ' + existingCustomerRef
           });
         }
       } catch (innerError) {
-        log.error({ title: 'Error in afterSubmit logic', details: innerError });
+          log.error({ title: 'Error in afterSubmit logic', details: innerError });
       }
     } catch (outerError) {
-      log.error({ title: 'Error in afterSubmit wrapper', details: outerError });
+        log.error({ title: 'Error in afterSubmit wrapper', details: outerError });
     }
   }
  

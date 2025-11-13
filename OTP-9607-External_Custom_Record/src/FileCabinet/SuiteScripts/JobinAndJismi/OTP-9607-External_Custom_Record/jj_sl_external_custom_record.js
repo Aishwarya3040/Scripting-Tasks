@@ -77,8 +77,8 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/log'], function(serverWi
       customerForm.addSubmitButton({ label: 'Submit Inquiry' });
       return customerForm;
     } catch (error) {
-      log.error({ title: 'Error in buildInquiryForm', details: error });
-      throw error;
+        log.error({ title: 'Error in buildInquiryForm', details: error });
+        throw error;
     }
   }
  
@@ -108,7 +108,7 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/log'], function(serverWi
             return false;
           });
         } catch (searchError) {
-          log.error({ title: 'Error in customer email search', details: searchError });
+            log.error({ title: 'Error in customer email search', details: searchError });
         }
       }
  
@@ -128,8 +128,8 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/log'], function(serverWi
  
       inquiryRecord.save();
     } catch (error) {
-      log.error({ title: 'Error in createInquiryRecord', details: error });
-      throw error;
+        log.error({ title: 'Error in createInquiryRecord', details: error });
+        throw error;
     }
   }
  
@@ -146,11 +146,11 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/log'], function(serverWi
           const customerForm = buildInquiryForm();
           context.response.writePage(customerForm);
         } catch (formError) {
-          log.error({ title: 'Error rendering form', details: formError });
-          context.response.write('Unable to load the form. Please try again later.');
+            log.error({ title: 'Error rendering form', details: formError });
+            context.response.write('Unable to load the form. Please try again later.');
         }
       } else {
-        try {
+          try {
           const formData = {
             name: context.request.parameters.custpage_name,
             email: context.request.parameters.custpage_email,
@@ -162,13 +162,13 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/log'], function(serverWi
           createInquiryRecord(formData);
           context.response.write('Thank you! Your inquiry has been submitted.');
         } catch (submitError) {
-          log.error({ title: 'Error submitting inquiry', details: submitError });
-          context.response.write('An error occurred while submitting your inquiry. Please try again later.');
+            log.error({ title: 'Error submitting inquiry', details: submitError });
+            context.response.write('An error occurred while submitting your inquiry. Please try again later.');
         }
       }
     } catch (outerError) {
-      log.error({ title: 'Unhandled error in onRequest', details: outerError });
-      context.response.write('Unexpected error occurred. Please contact support.');
+        log.error({ title: 'Unhandled error in onRequest', details: outerError });
+        context.response.write('Unexpected error occurred. Please contact support.');
     }
   }
  

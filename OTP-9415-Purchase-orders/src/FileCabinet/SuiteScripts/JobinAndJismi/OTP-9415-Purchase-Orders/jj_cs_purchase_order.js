@@ -12,7 +12,7 @@
 *
 * Date Created  : 14-November-2025
 *
-* Description   : Clientc Script to support the Suitelet for Purchase Orders. 
+* Description   : Client Script to support the Suitelet for Purchase Orders. 
 *                 Handles employee filter changes by refreshing the page with updated results 
 *                 and manages pagination navigation between pages of purchase orders.
 *
@@ -24,8 +24,8 @@
 
 define(['N/url', 'N/currentRecord', 'N/log'], function(url, currentRecord, log) {
 
-    const scriptId = 'customscript_jj_sl_purchase_orders'; // Replace with your Suitelet script ID
-    const deploymentId = 'customdeploy_jj_sl_purchase_orders'; // Replace with your deployment ID
+    const suiteletScriptId = 'customscript_jj_sl_purchase_orders'; 
+    const suiteletDeploymentId = 'customdeploy_jj_sl_purchase_orders'; 
 
     /**
      * Triggered when a field value changes.
@@ -35,8 +35,8 @@ define(['N/url', 'N/currentRecord', 'N/log'], function(url, currentRecord, log) 
     const fieldChanged = (context) => {
         try {
             if (context.fieldId === 'custpage_employee') {
-                const record = currentRecord.get();
-                const employeeId = record.getValue({ fieldId: 'custpage_employee' });
+                const currentRec = currentRecord.get();
+                const employeeId = currentRec.getValue({ fieldId: 'custpage_employee' });
 
                 const params = {};
                 if (employeeId) {
@@ -44,8 +44,8 @@ define(['N/url', 'N/currentRecord', 'N/log'], function(url, currentRecord, log) 
                 }
 
                 const resolvedUrl = url.resolveScript({
-                    scriptId: scriptId,
-                    deploymentId: deploymentId,
+                    scriptId: suiteletScriptId,
+                    deploymentId: suiteletDeploymentId,
                     params: params
                 });
 
@@ -62,15 +62,15 @@ define(['N/url', 'N/currentRecord', 'N/log'], function(url, currentRecord, log) 
      */
     const navigatePage = (pageIndex) => {
         try {
-            const record = currentRecord.get();
-            const employeeId = record.getValue({ fieldId: 'custpage_employee' });
+            const currentRec = currentRecord.get();
+            const employeeId = currentRec.getValue({ fieldId: 'custpage_employee' });
 
             const params = { pageIndex: pageIndex };
             if (employeeId) params.custpage_employee = employeeId;
 
             const resolvedUrl = url.resolveScript({
-                scriptId: scriptId,
-                deploymentId: deploymentId,
+                scriptId: suiteletScriptId,
+                deploymentId: suiteletDeploymentId,
                 params: params
             });
 

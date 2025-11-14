@@ -1,0 +1,31 @@
+<suitelet scriptid="customscript_jj_sl_purchase_orders">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>JJ SL Purchase Orders</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteScripts/JobinAndJismi/OTP-9415-Purchase_Orders/jj_sl_purchase_orders.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_jj_sl_purchase_orders">
+      <allemployees>T</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole>ONLINE_FORM_USER</audslctrole>
+      <eventtype></eventtype>
+      <isdeployed>T</isdeployed>
+      <isonline>T</isonline>
+      <loglevel>ERROR</loglevel>
+      <runasrole>ADMINISTRATOR</runasrole>
+      <status>RELEASED</status>
+      <title>JJ SL Purchase Orders</title>
+      <links>
+        <link>
+          <linkcategory>BASICLISTSCUSTOM</linkcategory>
+          <linklabel>Email report</linklabel>
+        </link>
+      </links>
+    </scriptdeployment>
+  </scriptdeployments>
+</suitelet>

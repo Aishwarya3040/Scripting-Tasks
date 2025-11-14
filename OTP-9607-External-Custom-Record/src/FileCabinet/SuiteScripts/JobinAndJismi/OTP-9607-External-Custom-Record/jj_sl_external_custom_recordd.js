@@ -3,74 +3,38 @@
  * @NScriptType Suitelet
  */
 /************************************************************************************************
- *  
  * OTP-9607 : External Custom Record form and actions
- *
-*************************************************************************************************
- *
  * Author: Jobin and Jismi IT Services
- *
  * Date Created : 29-October-2025
- *
- * Description : Suitelet and UserEvent scripts enable external users to submit customer queries directly into NetSuite without login access.
- *
- * REVISION HISTORY
- *
- * @version 1.0 : 28-October-2025 :  The initial build was created by JJ0416
- *
-*************************************************************************************************/
+ * Description : Suitelet enables external users to submit customer inquiries without login access.
+ *************************************************************************************************/
 
 define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/log'], function(serverWidget, record, search, log) {
 
   function buildInquiryForm() {
-    try {
-      const customerForm = serverWidget.createForm({ title: 'Customer Inquiry Form' });
+    const form = serverWidget.createForm({ title: 'Customer Inquiry Form' });
 
-      customerForm.addField({
-        id: 'custpage_name',
-        type: serverWidget.FieldType.TEXT,
-        label: 'Customer Name'
-      }).isMandatory = true;
+    form.addField({ id: 'custpage_name', type: serverWidget.FieldType.TEXT, label: 'Customer Name' }).isMandatory = true;
+    form.addField({ id: 'custpage_email', type: serverWidget.FieldType.EMAIL, label: 'Customer Email' }).isMandatory = true;
+    form.addField({ id: 'custpage_subject', type: serverWidget.FieldType.TEXT, label: 'Subject' }).isMandatory = true;
+    form.addField({ id: 'custpage_message', type: serverWidget.FieldType.TEXTAREA, label: 'Message' }).isMandatory = true;
 
-      customerForm.addField({
-        id: 'custpage_email',
-        type: serverWidget.FieldType.EMAIL,
-        label: 'Customer Email'
-      }).isMandatory = true;
-
-      customerForm.addField({
-        id: 'custpage_subject',
-        type: serverWidget.FieldType.TEXT,
-        label: 'Subject'
-      }).isMandatory = true;
-
-      customerForm.addField({
-        id: 'custpage_message',
-        type: serverWidget.FieldType.TEXTAREA,
-        label: 'Message'
-      }).isMandatory = true;
-
-      customerForm.addSubmitButton({ label: 'Submit Inquiry' });
-      return customerForm;
-    } catch (error) {
-      log.error({ title: 'Error in buildInquiryForm', details: error });
-      throw error;
-    }
+    form.addSubmitButton({ label: 'Submit Inquiry' });
+    return form;
   }
 
   function isDuplicateInquiry(email) {
     try {
-      const normalizedEmail = email ? email.trim().toLowerCase() : '';
+      const normalizedEmail = email.trim().toLowerCase();
       const inquirySearch = search.create({
         type: 'customrecord_jj_customerinquiry',
         filters: [['custrecord_jj_customer_email', 'is', normalizedEmail]],
         columns: ['internalid']
       });
-
       const results = inquirySearch.run().getRange({ start: 0, end: 1 });
       return results.length > 0;
     } catch (error) {
-      log.error({ title: 'Error in isDuplicateInquiry', details: error });
+      log.error({ title: 'Error in isDuplicateInquiry', details: JSON.stringify(error) });
       return false;
     }
   }
@@ -79,24 +43,16 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/log'], function(serverWi
     try {
       let linkedCustomerId = null;
 
-      if (formData.email) {
-        try {
-          const normalizedEmail = formData.email.trim().toLowerCase();
+      const normalizedEmail = formData.email.trim().toLowerCase();
+      const customerSearch = search.create({
+        type: search.Type.CUSTOMER,
+        filters: [['email', 'is', normalizedEmail]],
+        columns: ['internalid']
+      });
 
-          const customerSearch = search.create({
-            type: search.Type.CUSTOMER,
-            filters: [['email', 'is', normalizedEmail]],
-            columns: ['internalid']
-          });
-
-          customerSearch.run().each(function(customerResult) {
-            linkedCustomerId = customerResult.getValue({ name: 'internalid' });
-            return false;
-          });
-
-        } catch (searchError) {
-          log.error({ title: 'Error in customer email search', details: searchError });
-        }
+      const result = customerSearch.run().getRange({ start: 0, end: 1 })[0];
+      if (result) {
+        linkedCustomerId = result.getValue('internalid');
       }
 
       const inquiryRecord = record.create({
@@ -115,7 +71,7 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/log'], function(serverWi
 
       inquiryRecord.save();
     } catch (error) {
-      log.error({ title: 'Error in createInquiryRecord', details: error });
+      log.error({ title: 'Error in createInquiryRecord', details: JSON.stringify(error) });
       throw error;
     }
   }
@@ -123,8 +79,7 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/log'], function(serverWi
   function onRequest(context) {
     try {
       if (context.request.method === 'GET') {
-        const customerForm = buildInquiryForm();
-        context.response.writePage(customerForm);
+        context.response.writePage(buildInquiryForm());
       } else {
         const formData = {
           name: context.request.parameters.custpage_name,
@@ -133,21 +88,25 @@ define(['N/ui/serverWidget', 'N/record', 'N/search', 'N/log'], function(serverWi
           message: context.request.parameters.custpage_message
         };
 
+        // Basic validation
+        if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+          context.response.write('❌ All fields are required.');
+          return;
+        }
+
         if (isDuplicateInquiry(formData.email)) {
           context.response.write('An inquiry with this email already exists. Please wait for a response or contact support.');
           return;
         }
 
         createInquiryRecord(formData);
-        context.response.write('Thank you! Your inquiry has been submitted.');
+        context.response.write('✅ Thank you! Your inquiry has been submitted.');
       }
     } catch (error) {
-      log.error({ title: 'Unhandled error in onRequest', details: error });
-      context.response.write('Unexpected error occurred. Please contact support.');
+      log.error({ title: 'Unhandled error in onRequest', details: JSON.stringify(error) });
+      context.response.write('❌ Unexpected error occurred. Please contact support.');
     }
   }
 
-  return {
-    onRequest: onRequest
-  };
+  return { onRequest };
 });

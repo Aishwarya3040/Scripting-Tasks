@@ -127,9 +127,9 @@ define(['N/log', 'N/record', 'N/format'], function(log, record, format) {
     try {
       return updateItemFulfillmentRecord(requestBody);
     } catch (error) {
-      log.error({
-        title: 'Failed to process PUT request',
-        details: error
+        log.error({
+          title: 'Failed to process PUT request',
+          details: error
       });
       return {
         RESULT: "FAILED",

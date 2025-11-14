@@ -122,9 +122,9 @@ define(['N/log', 'N/record'], (log, record) => {
     try {
       return createItemFulfillmentFromSalesOrder(requestBody);
     } catch (postError) {
-      log.error({
-        title: 'Failed to process POST request',
-        details: postError
+        log.error({
+          title: 'Failed to process POST request',
+          details: postError
       });
 
       return {

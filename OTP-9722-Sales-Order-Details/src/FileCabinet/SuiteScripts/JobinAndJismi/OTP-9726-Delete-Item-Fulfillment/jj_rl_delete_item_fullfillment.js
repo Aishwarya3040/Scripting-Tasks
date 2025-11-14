@@ -45,9 +45,9 @@ define(['N/log', 'N/record'], function(log, record) {
           id: fulfillmentId
         });
       } catch (loadError) {
-        return {
-          RESULT: "FAILED",
-          error: "Item Fulfillment record not found"
+          return {
+            RESULT: "FAILED",
+            error: "Item Fulfillment record not found"
         };
       }
 
@@ -67,9 +67,9 @@ define(['N/log', 'N/record'], function(log, record) {
       };
 
     } catch (error) {
-      log.error({
-        title: 'Failed to delete Item Fulfillment',
-        details: error.message || error.toString()
+        log.error({
+          title: 'Failed to delete Item Fulfillment',
+          details: error.message || error.toString()
       });
 
       return {

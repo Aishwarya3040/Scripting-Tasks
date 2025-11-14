@@ -58,12 +58,12 @@ define(['N/log', 'N/record', 'N/search'], function(log, record, search) {
       return { result: summarizedOrders };
 
     } catch (error) {
-      log.error('getOpenSalesOrdersSummary Error', JSON.stringify(error));
-      return {
-        error: {
-          code: 'UNEXPECTED_ERROR',
-          message: error.message || 'Unknown error',
-          stack: error.stack || 'No stack trace'
+        log.error('getOpenSalesOrdersSummary Error', JSON.stringify(error));
+        return {
+          error: {
+            code: 'UNEXPECTED_ERROR',
+            message: error.message || 'Unknown error',
+            stack: error.stack || 'No stack trace'
         }
       };
     }
@@ -119,12 +119,12 @@ define(['N/log', 'N/record', 'N/search'], function(log, record, search) {
       };
 
     } catch (error) {
-      log.error('getSalesOrderDetailsById Error', JSON.stringify(error));
-      return {
-        error: {
-          code: 'UNEXPECTED_ERROR',
-          message: error.message || 'Unknown error',
-          stack: error.stack || 'No stack trace'
+        log.error('getSalesOrderDetailsById Error', JSON.stringify(error));
+        return {
+          error: {
+            code: 'UNEXPECTED_ERROR',
+            message: error.message || 'Unknown error',
+            stack: error.stack || 'No stack trace'
         }
       };
     }
@@ -143,16 +143,16 @@ define(['N/log', 'N/record', 'N/search'], function(log, record, search) {
       if (requestParams && requestParams.id) {
         return getSalesOrderDetailsById(requestParams.id);
       } else {
-        return getOpenSalesOrdersSummary();
+          return getOpenSalesOrdersSummary();
       }
 
     } catch (error) {
-      log.error('handleGetRequest Error', JSON.stringify(error));
-      return {
-        error: {
-          code: 'UNEXPECTED_ERROR',
-          message: error.message || 'Unknown error',
-          stack: error.stack || 'No stack trace'
+        log.error('handleGetRequest Error', JSON.stringify(error));
+        return {
+          error: {
+            code: 'UNEXPECTED_ERROR',
+            message: error.message || 'Unknown error',
+            stack: error.stack || 'No stack trace'
         }
       };
     }

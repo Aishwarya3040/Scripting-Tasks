@@ -73,7 +73,7 @@ define(['N/search', 'N/log', 'N/file', 'N/email', 'N/record'], function(search, 
         return true;
       });
     } catch (error) {
-      log.error({ title: 'Error in logSearchResults', details: error.message || error.toString() });
+        log.error({ title: 'Error in logSearchResults', details: error.message || error.toString() });
     }
   };
 
@@ -89,8 +89,8 @@ define(['N/search', 'N/log', 'N/file', 'N/email', 'N/record'], function(search, 
         id: customerId
       }).getValue('email');
     } catch (error) {
-      log.error({ title: 'Customer Email Lookup Error', details: error.message || error.toString() });
-      return null;
+        log.error({ title: 'Customer Email Lookup Error', details: error.message || error.toString() });
+        return null;
     }
   };
 
@@ -118,8 +118,8 @@ define(['N/search', 'N/log', 'N/file', 'N/email', 'N/record'], function(search, 
       csvFile.save();
       return csvFile;
     } catch (error) {
-      log.error({ title: 'Error in createCsvFile', details: error.message || error.toString() });
-      return null;
+        log.error({ title: 'Error in createCsvFile', details: error.message || error.toString() });
+        return null;
     }
   };
 
@@ -143,7 +143,7 @@ define(['N/search', 'N/log', 'N/file', 'N/email', 'N/record'], function(search, 
 
       log.audit('Email Sent', `Email sent to ${customerName} (${customerEmail}) from sender ID ${senderId}.`);
     } catch (error) {
-      log.error({ title: 'Email Send Failed', details: `Customer: ${customerName}, Error: ${error.message || error.toString()}` });
+        log.error({ title: 'Email Send Failed', details: `Customer: ${customerName}, Error: ${error.message || error.toString()}` });
     }
   };
 
@@ -158,8 +158,8 @@ define(['N/search', 'N/log', 'N/file', 'N/email', 'N/record'], function(search, 
       logSearchResults(searchObj);
       return searchObj;
     } catch (error) {
-      log.error({ title: 'getInputData Error', details: error.message || error.toString() });
-      throw error;
+        log.error({ title: 'getInputData Error', details: error.message || error.toString() });
+        throw error;
     }
   };
 
@@ -188,7 +188,7 @@ define(['N/search', 'N/log', 'N/file', 'N/email', 'N/record'], function(search, 
         value: invoiceSummary
       });
     } catch (error) {
-      log.error({ title: 'Map Error', details: error.message || error.toString() });
+        log.error({ title: 'Map Error', details: error.message || error.toString() });
     }
   };
 
@@ -216,7 +216,7 @@ define(['N/search', 'N/log', 'N/file', 'N/email', 'N/record'], function(search, 
       const senderId = salesRepId || fallbackSenderId;
       sendEmailWithAttachment(senderId, customerId, customerName, csvFile, customerEmail);
     } catch (error) {
-      log.error({ title: 'Reduce Error', details: error.message || error.toString() });
+        log.error({ title: 'Reduce Error', details: error.message || error.toString() });
     }
   };
 

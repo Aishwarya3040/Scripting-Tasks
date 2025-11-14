@@ -71,7 +71,7 @@ define(['N/record', 'N/runtime', 'N/search'], function(record, runtime, search) 
       }
 
     } catch (error) {
-      throw error;
+        throw error;
     }
   };
 
@@ -105,7 +105,7 @@ define(['N/record', 'N/runtime', 'N/search'], function(record, runtime, search) 
       return accumulatedDeposit;
 
     } catch (error) {
-      return 0;
+        return 0;
     }
   };
 
